@@ -12,7 +12,7 @@ import "./interfaces/ILendingPoolAddressesProvider.sol";
 import "./interfaces/IProtocolDataProvider.sol";
 
 contract Strategy is BaseStrategy {
-    IProtocolDataProvider public constant protocolDataProvider =
+    IProtocolDataProvider public constant PROTOCOL_DATA_PROVIDER =
         IProtocolDataProvider(0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d);
 
     address public immutable aToken;
@@ -21,7 +21,7 @@ contract Strategy is BaseStrategy {
         address _vault,
         string memory _name
     ) BaseStrategy(_vault, _name) {
-        (address _aToken, , ) = protocolDataProvider.getReserveTokensAddresses(
+        (address _aToken, , ) = PROTOCOL_DATA_PROVIDER.getReserveTokensAddresses(
             asset
         );
         aToken = _aToken;
@@ -36,8 +36,8 @@ contract Strategy is BaseStrategy {
     function _freeFunds(
         uint256 _amount
     ) internal returns (uint256 _amountFreed) {
-        uint256 idle_amount = balanceOfAsset();
-        if (_amount <= idle_amount) {
+        uint256 _idleAmount = balanceOfAsset();
+        if (_amount <= _idleAmount) {
             // we have enough idle assets for the vault to take
             _amountFreed = _amount;
         } else {
@@ -46,10 +46,12 @@ contract Strategy is BaseStrategy {
             // We run with 'unchecked' as we are safe from underflow
             unchecked {
                 _withdrawFromAave(
-                    Math.min(_amount - idle_amount, balanceOfAToken())
+                    Math.min(_amount - _idleAmount, balanceOfAToken())
                 );
             }
             _amountFreed = balanceOfAsset();
+
+
         }
     }
 
@@ -62,9 +64,9 @@ contract Strategy is BaseStrategy {
     }
 
     function _invest() internal override {
-        uint256 available_to_invest = balanceOfAsset();
-        require(available_to_invest > 0, "no funds to invest");
-        _depositToAave(available_to_invest);
+        uint256 _availableToInvest = balanceOfAsset();
+        require(_availableToInvest > 0, "no funds to invest");
+        _depositToAave(_availableToInvest);
     }
 
     function _depositToAave(uint256 amount) internal {
@@ -93,7 +95,7 @@ contract Strategy is BaseStrategy {
     function _lendingPool() internal view returns (ILendingPool) {
         return
             ILendingPool(
-                protocolDataProvider.ADDRESSES_PROVIDER().getLendingPool()
+                PROTOCOL_DATA_PROVIDER.ADDRESSES_PROVIDER().getLendingPool()
             );
     }
 
@@ -116,9 +118,10 @@ contract Strategy is BaseStrategy {
 
         (, , , , uint256 reserveFactor, , , , , ) = protocolDataProvider.getReserveConfigurationData(address(want));
 
-        (uint256 newLiquidityRate, , ) =
-            IReserveInterestRateStrategy(reserveData.interestRateStrategyAddress).calculateInterestRates(
-                address(want),
+        (uint256 newLiquidityRate, , ) = IReserveInterestRateStrategy(
+            reserveData.interestRateStrategyAddress
+        ).calculateInterestRates(
+                address(asset),
                 uint256(newLiquidity),
                 totalStableDebt,
                 totalVariableDebt,
