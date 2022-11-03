@@ -33,4 +33,3 @@ hardhat:
     ethereum:
       mainnet:
         upstream_provider: infura
-#        upstream_provider: alchemy
