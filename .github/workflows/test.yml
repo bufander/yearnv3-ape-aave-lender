@@ -23,7 +23,7 @@ jobs:
       - run: ape test
         timeout-minutes: 10
         env:
-          WEB3_ALCHEMY_PROJECT_ID: {% raw %}${{ secrets.WEB3_ALCHEMY_PROJECT_ID }}{% endraw %}
-          WEB3_INFURA_PROJECT_ID: {% raw %}${{ secrets.WEB3_INFURA_PROJECT_ID }}{% endraw %}
+          WEB3_ALCHEMY_PROJECT_ID: secrets.WEB3_ALCHEMY_PROJECT_ID
+          WEB3_INFURA_PROJECT_ID: secrets.WEB3_INFURA_PROJECT_ID
 
 
