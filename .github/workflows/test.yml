@@ -16,11 +16,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: pip install -r requirements-dev.txt
       - uses: ApeWorX/github-action@v1.1
         with:
           python-version: "3.9"
-      - run: pip install git+https://github.com/vyperlang/vyper@v0.3.4
+      - run: pip install -r requirements-dev.txt
+      - run: pip install git+https://github.com/vyperlang/vyper@v0.3.7
       - run: ape compile --force --size
       - run: npm install hardhat
       - run: ape test
