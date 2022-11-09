@@ -45,16 +45,14 @@ def create_vault(project, gov):
     def create_vault(
         asset,
         governance=gov,
-        deposit_limit=MAX_INT,
-        max_profit_locking_time=WEEK,
+        deposit_limit=MAX_INT
     ):
         vault = gov.deploy(
             project.dependencies["yearn-vaults"]["master"].VaultV3,
             asset,
             "VaultV3",
             "AV",
-            governance,
-            max_profit_locking_time,
+            governance
         )
         # set vault deposit
         vault.set_deposit_limit(deposit_limit, sender=gov)
