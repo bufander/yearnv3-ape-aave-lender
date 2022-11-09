@@ -236,7 +236,7 @@ def test_withdraw_low_liquidity(
     assert strategy.balanceOf(vault) == new_debt
     assert asset.balanceOf(strategy) == 0
     assert asset.balanceOf(vault) == 0
-    assert atoken.balanceOf(strategy) == pytest.approx(new_debt, REL_ERROR)
+    assert pytest.approx(atoken.balanceOf(strategy), REL_ERROR) == new_debt
 
     # let's drain atoken contract
     asset.transfer(
@@ -245,7 +245,13 @@ def test_withdraw_low_liquidity(
 
     strategy.withdraw(strategy.maxWithdraw(vault), vault, vault, sender=vault)
 
-    assert pytest.approx(strategy.balanceOf(vault), abs=1e3) == new_debt - 10 ** vault.decimals()
+    assert (
+        pytest.approx(strategy.balanceOf(vault), abs=1e3)
+        == new_debt - 10 ** vault.decimals()
+    )
     assert asset.balanceOf(strategy) == 0
-    assert asset.balanceOf(vault) == pytest.approx(10 ** vault.decimals(), REL_ERROR)
-    assert pytest.approx(atoken.balanceOf(strategy), abs=1e3) == new_debt - 10 ** vault.decimals()
+    assert pytest.approx(asset.balanceOf(vault), REL_ERROR) == 10 ** vault.decimals()
+    assert (
+        pytest.approx(atoken.balanceOf(strategy), abs=1e3)
+        == new_debt - 10 ** vault.decimals()
+    )
