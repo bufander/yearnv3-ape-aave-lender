@@ -15,7 +15,9 @@ interface IProtocolDataProvider {
         view
         returns (ILendingPoolAddressesProvider);
 
-    function getReserveTokensAddresses(address asset)
+    function getReserveTokensAddresses(
+        address asset
+    )
         external
         view
         returns (

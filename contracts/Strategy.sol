@@ -17,28 +17,25 @@ contract Strategy is BaseStrategy {
 
     address public immutable aToken;
 
-    constructor(address _vault, string memory _name)
-        BaseStrategy(_vault, _name)
-    {
+    constructor(
+        address _vault,
+        string memory _name
+    ) BaseStrategy(_vault, _name) {
         (address _aToken, , ) = protocolDataProvider.getReserveTokensAddresses(
             asset
         );
         aToken = _aToken;
     }
 
-    function _maxWithdraw(address owner)
-        internal
-        view
-        override
-        returns (uint256)
-    {
+    function _maxWithdraw(
+        address owner
+    ) internal view override returns (uint256) {
         return Math.min(IERC20(asset).balanceOf(aToken), _totalAssets());
     }
 
-    function _freeFunds(uint256 _amount)
-        internal
-        returns (uint256 _amountFreed)
-    {
+    function _freeFunds(
+        uint256 _amount
+    ) internal returns (uint256 _amountFreed) {
         uint256 idle_amount = balanceOfAsset();
         if (_amount <= idle_amount) {
             // we have enough idle assets for the vault to take
