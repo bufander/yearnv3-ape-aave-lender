@@ -19,6 +19,7 @@ jobs:
       - uses: ApeWorX/github-action@v1.1
         with:
           python-version: "3.9"
+          ape-version-pin: '==0.4.5'
       - run: pip install -r requirements-dev.txt
       - run: pip install git+https://github.com/vyperlang/vyper@v0.3.7
       - run: ape compile --force --size
