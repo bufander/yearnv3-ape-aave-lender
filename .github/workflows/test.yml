@@ -13,20 +13,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: ApeWorX/github-action@v1.1
-        with:
-          python-version: "3.9"
-          ape-version-pin: '==0.5.2'
-      - run: pip install git+https://github.com/vyperlang/vyper@v0.3.7
       - uses: actions/setup-node@v3
         with:
           node-version: '14.x'
-      - run: ape compile --force --size
-      - run: npm install hardhat
-      - run: ape test
-        timeout-minutes: 10
-        env:
-          WEB3_ALCHEMY_PROJECT_ID: secrets.WEB3_ALCHEMY_PROJECT_ID
-          WEB3_INFURA_PROJECT_ID: secrets.WEB3_INFURA_PROJECT_ID
 
+      - uses: ApeWorX/github-action@v1
+        with:
+          python-version: '3.9'
+          ape-version-pin: '==0.5.2'
+
+      - name: Install Vyper
+        run: pip install git+https://github.com/vyperlang/vyper@v0.3.7
+
+      - name: Compile contracts
+        run: ape compile --force --size
+
+      - name: Install hardhat
+        run: npm install hardhat
+
+      - name: Run tests
+        run: ape test -s
+        timeout-minutes: 15
+        env:
+          WEB3_ALCHEMY_PROJECT_ID: ${{ secrets.WEB3_ALCHEMY_PROJECT_ID }}
+          WEB3_INFURA_PROJECT_ID: ${{ secrets.WEB3_INFURA_PROJECT_ID }}
 
