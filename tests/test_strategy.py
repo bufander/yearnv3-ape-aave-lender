@@ -101,12 +101,12 @@ def test_balance_of(create_vault_and_strategy, gov, amount, provide_strategy_wit
     new_debt = amount // 2
     provide_strategy_with_debt(gov, strategy, vault, new_debt)
 
-    assert strategy.balanceOf(vault) == new_debt
+    assert pytest.approx(strategy.balanceOf(vault), 1e-4) == new_debt
 
     new_new_debt = amount // 4
     provide_strategy_with_debt(gov, strategy, vault, new_debt + new_new_debt)
 
-    assert strategy.balanceOf(vault) == pytest.approx(new_debt + new_new_debt, 1e-4)
+    assert pytest.approx(strategy.balanceOf(vault), 1e-4) == new_debt + new_new_debt
 
 
 def test_deposit_no_vault__reverts(create_vault_and_strategy, gov, amount, user):
@@ -132,7 +132,7 @@ def test_deposit(
     assert asset.balanceOf(vault) == amount // 2
     # get's reinvested directly
     assert asset.balanceOf(strategy) == 0
-    assert atoken.balanceOf(strategy) == pytest.approx(new_debt, REL_ERROR)
+    assert pytest.approx(atoken.balanceOf(strategy), REL_ERROR) == new_debt
 
 
 def test_max_withdraw(
@@ -245,11 +245,7 @@ def test_withdraw_low_liquidity(
 
     strategy.withdraw(strategy.maxWithdraw(vault), vault, vault, sender=vault)
 
-    assert strategy.balanceOf(vault) == pytest.approx(
-        new_debt - 10 ** vault.decimals(), abs=1e3
-    )
+    assert pytest.approx(strategy.balanceOf(vault), abs=1e3) == new_debt - 10 ** vault.decimals()
     assert asset.balanceOf(strategy) == 0
     assert asset.balanceOf(vault) == pytest.approx(10 ** vault.decimals(), REL_ERROR)
-    assert atoken.balanceOf(strategy) == pytest.approx(
-        new_debt - 10 ** vault.decimals(), abs=1e3
-    )
+    assert pytest.approx(atoken.balanceOf(strategy), abs=1e3) == new_debt - 10 ** vault.decimals()
