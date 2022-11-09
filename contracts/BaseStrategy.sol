@@ -18,12 +18,9 @@ abstract contract BaseStrategy {
         asset = IVault(vault).asset();
     }
 
-    function maxDeposit(address receiver)
-        public
-        view
-        virtual
-        returns (uint256 maxAssets)
-    {
+    function maxDeposit(
+        address receiver
+    ) public view virtual returns (uint256 maxAssets) {
         maxAssets = type(uint256).max;
     }
 
@@ -48,10 +45,10 @@ abstract contract BaseStrategy {
         return 0;
     }
 
-    function deposit(uint256 assets, address receiver)
-        public
-        returns (uint256)
-    {
+    function deposit(
+        uint256 assets,
+        address receiver
+    ) public returns (uint256) {
         require(msg.sender == vault && msg.sender == receiver, "not owner");
 
         // transfer and invest
@@ -64,12 +61,9 @@ abstract contract BaseStrategy {
         return _maxWithdraw(owner);
     }
 
-    function _maxWithdraw(address owner)
-        internal
-        view
-        virtual
-        returns (uint256 withdraw_amount)
-    {}
+    function _maxWithdraw(
+        address owner
+    ) internal view virtual returns (uint256 withdraw_amount) {}
 
     function withdraw(
         uint256 amount,
