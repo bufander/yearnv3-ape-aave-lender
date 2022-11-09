@@ -246,12 +246,12 @@ def test_withdraw_low_liquidity(
     strategy.withdraw(strategy.maxWithdraw(vault), vault, vault, sender=vault)
 
     assert (
-        pytest.approx(strategy.balanceOf(vault), abs=1e3)
+        pytest.approx(strategy.balanceOf(vault), abs=1e4)
         == new_debt - 10 ** vault.decimals()
     )
     assert asset.balanceOf(strategy) == 0
     assert pytest.approx(asset.balanceOf(vault), REL_ERROR) == 10 ** vault.decimals()
     assert (
-        pytest.approx(atoken.balanceOf(strategy), abs=1e3)
+        pytest.approx(atoken.balanceOf(strategy), abs=1e4)
         == new_debt - 10 ** vault.decimals()
     )
