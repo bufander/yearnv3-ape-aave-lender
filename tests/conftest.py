@@ -42,17 +42,13 @@ def atoken():
 
 @pytest.fixture(scope="session")
 def create_vault(project, gov):
-    def create_vault(
-        asset,
-        governance=gov,
-        deposit_limit=MAX_INT
-    ):
+    def create_vault(asset, governance=gov, deposit_limit=MAX_INT):
         vault = gov.deploy(
             project.dependencies["yearn-vaults"]["master"].VaultV3,
             asset,
             "VaultV3",
             "AV",
-            governance
+            governance,
         )
         # set vault deposit
         vault.set_deposit_limit(deposit_limit, sender=gov)
