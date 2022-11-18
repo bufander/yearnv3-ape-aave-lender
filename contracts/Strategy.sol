@@ -53,11 +53,7 @@ contract Strategy is BaseStrategy {
         }
     }
 
-    function _withdraw(
-        uint256 amount,
-        address receiver,
-        address owner
-    ) internal override returns (uint256) {
+    function _withdraw(uint256 amount) internal override returns (uint256) {
         return _freeFunds(amount);
     }
 

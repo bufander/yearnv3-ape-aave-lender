@@ -175,7 +175,7 @@ def test_max_withdraw_no_liquidity(
 def test_withdraw_no_owner__reverts(create_vault_and_strategy, gov, amount, user):
     vault, strategy = create_vault_and_strategy(gov, amount)
     with reverts("not owner"):
-        strategy.withdraw(100, user, user, sender=vault)
+        strategy.withdraw(100, user, user, sender=user)
 
 
 def test_withdraw_above_max__reverts(create_vault_and_strategy, gov, amount, user):
@@ -255,3 +255,14 @@ def test_withdraw_low_liquidity(
         pytest.approx(atoken.balanceOf(strategy), abs=1e4)
         == new_debt - 10 ** vault.decimals()
     )
+
+
+def test_withdraw_mev_bot(
+    asset, user, create_vault_and_strategy, gov, amount, provide_strategy_with_debt
+):
+    vault, strategy = create_vault_and_strategy(gov, amount)
+    new_debt = amount
+    provide_strategy_with_debt(gov, strategy, vault, new_debt)
+
+    with reverts("not owner"):
+        strategy.withdraw(strategy.maxWithdraw(vault), user, user, sender=user)

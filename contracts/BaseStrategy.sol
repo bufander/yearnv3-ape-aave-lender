@@ -70,18 +70,16 @@ abstract contract BaseStrategy {
         address receiver,
         address owner
     ) public returns (uint256) {
-        require(msg.sender == owner, "not owner");
-        require(amount <= maxWithdraw(owner), "withdraw more than max");
+        require(msg.sender == vault && msg.sender == receiver, "not owner");
+        require(amount <= maxWithdraw(vault), "withdraw more than max");
 
-        uint256 amount_withdrawn = _withdraw(amount, receiver, owner);
+        uint256 amount_withdrawn = _withdraw(amount);
         IERC20(asset).transfer(receiver, amount_withdrawn);
         return amount_withdrawn;
     }
 
     function _withdraw(
-        uint256 amount,
-        address receiver,
-        address owner
+        uint256 amount
     ) internal virtual returns (uint256 withdraw_amount) {}
 
     function _invest() internal virtual {}
