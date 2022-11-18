@@ -250,16 +250,12 @@ def test_withdraw_low_liquidity(
         == new_debt - 10 ** vault.decimals()
     )
     assert asset.balanceOf(strategy) == 0
-    assert pytest.approx(asset.balanceOf(vault), REL_ERROR) == 10 ** vault.decimals()
-    assert (
-        pytest.approx(atoken.balanceOf(strategy), abs=1e4)
-        == new_debt - 10 ** vault.decimals()
-    )
+    assert pytest.approx(10 ** vault.decimals(), REL_ERROR) == asset.balanceOf(vault)
+    assert pytest.approx(
+        new_debt - 10 ** vault.decimals(), abs=1e3
+    ) == atoken.balanceOf(strategy) 
 
-
-def test_withdraw_mev_bot(
-    asset, user, create_vault_and_strategy, gov, amount, provide_strategy_with_debt
-):
+def test_withdraw_mev_bot(asset, user, create_vault_and_strategy, gov, amount, provide_strategy_with_debt):
     vault, strategy = create_vault_and_strategy(gov, amount)
     new_debt = amount
     provide_strategy_with_debt(gov, strategy, vault, new_debt)
