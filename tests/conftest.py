@@ -125,7 +125,7 @@ def user_interaction(strategy, vault, deposit_into_vault):
         awhale = "0x13873fa4B7771F3492825B00D1c37301fF41C348"
         lp = Contract("0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9")
         lp.withdraw(
-            "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            ASSET_ADDRESS,
             int(10**6),
             awhale,
             sender=accounts[awhale],
