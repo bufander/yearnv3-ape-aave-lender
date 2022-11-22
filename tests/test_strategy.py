@@ -127,7 +127,7 @@ def test_deposit(
     new_debt = amount // 2
     provide_strategy_with_debt(gov, strategy, vault, new_debt)
 
-    assert strategy.balanceOf(vault) == new_debt
+    assert pytest.approx(strategy.balanceOf(vault), 1e-5) == new_debt
 
     assert asset.balanceOf(vault) == amount // 2
     # get's reinvested directly

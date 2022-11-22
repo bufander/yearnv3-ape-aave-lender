@@ -6,10 +6,12 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
 import {IERC20, BaseStrategy} from "BaseStrategy.sol";
+import "./libraries/DataTypes.sol";
 
 import "./interfaces/ILendingPool.sol";
 import "./interfaces/ILendingPoolAddressesProvider.sol";
 import "./interfaces/IProtocolDataProvider.sol";
+import "./interfaces/IReserveInterestRateStrategy.sol";
 
 contract Strategy is BaseStrategy {
     IProtocolDataProvider public constant PROTOCOL_DATA_PROVIDER =
@@ -109,14 +111,13 @@ contract Strategy is BaseStrategy {
 
     function aprAfterDelta(int256 delta) external view returns (uint256) {
         // i need to calculate new supplyRate after Deposit (when deposit has not been done yet)
-        DataTypes.ReserveData memory reserveData = _lendingPool().getReserveData(address(want));
+        DataTypes.ReserveData memory reserveData = _lendingPool().getReserveData(address(asset));
 
-        (uint256 availableLiquidity, uint256 totalStableDebt, uint256 totalVariableDebt, , , , uint256 averageStableBorrowRate, , , ) =
-            protocolDataProvider.getReserveData(address(want));
+        (uint256 availableLiquidity, uint256 totalStableDebt, uint256 totalVariableDebt, , , , uint256 averageStableBorrowRate, , , ) = PROTOCOL_DATA_PROVIDER.getReserveData(address(asset));
 
-        int256 newLiquidity = int256(availableLiquidity) + extraAmount;
+        int256 newLiquidity = int256(availableLiquidity) + delta;
 
-        (, , , , uint256 reserveFactor, , , , , ) = protocolDataProvider.getReserveConfigurationData(address(want));
+        (, , , , uint256 reserveFactor, , , , , ) = PROTOCOL_DATA_PROVIDER.getReserveConfigurationData(address(asset));
 
         (uint256 newLiquidityRate, , ) = IReserveInterestRateStrategy(
             reserveData.interestRateStrategyAddress
