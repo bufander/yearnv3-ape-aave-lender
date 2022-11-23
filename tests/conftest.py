@@ -53,7 +53,7 @@ def create_vault(project, gov):
             asset,
             "VaultV3",
             "AV",
-            governance
+            governance,
         )
         # set vault deposit
         vault.set_deposit_limit(deposit_limit, sender=gov)
