@@ -106,7 +106,7 @@ contract Strategy is BaseStrategy {
         return IERC20(asset).balanceOf(address(this));
     }
 
-    function aprAfterDelta(int256 delta) external view returns (uint256) {
+    function aprAfterDebtChange(int256 delta) external view returns (uint256) {
         // i need to calculate new supplyRate after Deposit (when deposit has not been done yet)
         DataTypes.ReserveData memory reserveData = _lendingPool()
             .getReserveData(address(asset));
