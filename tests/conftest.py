@@ -53,11 +53,9 @@ def create_vault(project, gov):
             asset,
             "VaultV3",
             "AV",
-            governance, 
-            max_profit_locking_time
+            governance,
+            max_profit_locking_time,
         )
-        # set vault deposit
-        vault.set_deposit_limit(deposit_limit, sender=gov)
         # set up fee manager
         # vault.set_fee_manager(fee_manager.address, sender=gov)
 
@@ -66,6 +64,8 @@ def create_vault(project, gov):
             ROLES.STRATEGY_MANAGER | ROLES.DEBT_MANAGER | ROLES.ACCOUNTING_MANAGER,
             sender=gov,
         )
+        # set vault deposit
+        vault.set_deposit_limit(deposit_limit, sender=gov)
         return vault
 
     yield create_vault
