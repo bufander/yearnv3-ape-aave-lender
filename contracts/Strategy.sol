@@ -148,10 +148,10 @@ contract Strategy is BaseStrategy {
     function _migrate(address newStrategy) internal override {
         uint256 assetBalance = balanceOfAsset();
         uint256 aTokenBalance = balanceOfAToken();
-        if(assetBalance > 0){
+        if (assetBalance > 0) {
             IERC20(asset).safeTransfer(newStrategy, assetBalance);
         }
-        if(aTokenBalance > 0) {
+        if (aTokenBalance > 0) {
             IERC20(aToken).safeTransfer(newStrategy, aTokenBalance);
         }
     }
