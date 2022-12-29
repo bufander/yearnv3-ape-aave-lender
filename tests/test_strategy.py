@@ -111,11 +111,8 @@ def test_balance_of(create_vault_and_strategy, gov, amount, provide_strategy_wit
 
 def test_deposit_no_vault__reverts(create_vault_and_strategy, gov, amount, user):
     vault, strategy = create_vault_and_strategy(gov, amount)
-    with reverts("not owner"):
+    with reverts("not vault"):
         strategy.deposit(100, user, sender=user)
-
-    with reverts("not owner"):
-        strategy.deposit(100, user, sender=vault)
 
 
 def test_deposit(
@@ -174,7 +171,7 @@ def test_max_withdraw_no_liquidity(
 
 def test_withdraw_no_owner__reverts(create_vault_and_strategy, gov, amount, user):
     vault, strategy = create_vault_and_strategy(gov, amount)
-    with reverts("not owner"):
+    with reverts("not vault"):
         strategy.withdraw(100, user, user, sender=user)
 
 
@@ -286,5 +283,5 @@ def test_withdraw_mev_bot(
     new_debt = amount
     provide_strategy_with_debt(gov, strategy, vault, new_debt)
 
-    with reverts("not owner"):
+    with reverts("not vault"):
         strategy.withdraw(strategy.maxWithdraw(vault), user, user, sender=user)

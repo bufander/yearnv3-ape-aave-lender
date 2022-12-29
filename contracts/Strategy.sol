@@ -5,7 +5,7 @@ pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/utils/math/Math.sol";
 
-import {IERC20, BaseStrategy} from "BaseStrategy.sol";
+import {IERC20, BaseStrategy, SafeERC20} from "BaseStrategy.sol";
 import "./libraries/DataTypes.sol";
 
 import "./interfaces/ILendingPool.sol";
@@ -14,6 +14,8 @@ import "./interfaces/IProtocolDataProvider.sol";
 import "./interfaces/IReserveInterestRateStrategy.sol";
 
 contract Strategy is BaseStrategy {
+    using SafeERC20 for IERC20;
+
     IProtocolDataProvider public constant PROTOCOL_DATA_PROVIDER =
         IProtocolDataProvider(0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d);
 
@@ -141,5 +143,16 @@ contract Strategy is BaseStrategy {
             );
 
         return newLiquidityRate / 1e9; // ray to wad
+    }
+
+    function _migrate(address newStrategy) internal override {
+        uint256 assetBalance = balanceOfAsset();
+        uint256 aTokenBalance = balanceOfAToken();
+        if(assetBalance > 0){
+            IERC20(asset).safeTransfer(newStrategy, assetBalance);
+        }
+        if(aTokenBalance > 0) {
+            IERC20(aToken).safeTransfer(newStrategy, aTokenBalance);
+        }
     }
 }
